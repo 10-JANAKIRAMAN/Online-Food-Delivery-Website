@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food Chatbot</title>
+    <style>
+        #chatbox {
+            height: 400px;
+            width: 300px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: scroll;
+        }
+    </style>
+</head>
+<body>
+    <h1>Food Chatbot</h1>
+
+    <div id="chatbox"></div>
+
+    <input type="text" id="userInput" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        // Define the chatbot logic
+        function foodChatbot(userInput) {
+            // Define the chatbot responses
+            var responses = {
+                "hi|hello": ["Hello!", "Hi there!", "Greetings! How can I assist you with food today?"],
+                "what can I (.*)": ["You can try our delicious $1!", "We have a variety of $1 options available.", "I recommend our special $1."],
+                "recommend (.*)": ["Sure! How about trying our $1? It's one of our popular dishes.", "You might enjoy our $1. It's a customer favorite."],
+                "do you have (.*)": ["Yes, we have $1 on our menu. It's a great choice!", "Certainly! We offer $1 at our restaurant."],
+                "quit": ["Thank you for chatting with me. Enjoy your meal!"]
+            };
+
+            // Process user input and generate response
+            for (var pattern in responses) {
+                var regex = new RegExp(pattern, "i");
+                if (userInput.match(regex)) {
+                    var response = responses[pattern][Math.floor(Math.random() * responses[pattern].length)];
+                    return response.replace(/\$(\d)/g, function (match, group) {
+                        return userInput.match(regex)[group];
+                    });
+                }
+            }
+
+            // Default response for unrecognized input
+            return "I'm sorry, I didn't understand that. Can you please rephrase your question?";
+        }
+
+        // Handle user input and display chatbot response
+        function sendMessage() {
+            var userInput = document.getElementById("userInput").value;
+            var chatbox = document.getElementById("chatbox");
+
+            // Display user message
+            var userMessage = document.createElement("p");
+            userMessage.innerHTML = "<strong>You:</strong> " + userInput;
+            chatbox.appendChild(userMessage);
+
+            // Get chatbot response
+            var chatbotResponse = foodChatbot(userInput);
+
+            // Display chatbot response
+            var chatbotMessage = document.createElement("p");
+            chatbotMessage.innerHTML = "<strong>Chatbot:</strong> " + chatbotResponse;
+            chatbox.appendChild(chatbotMessage);
+
+            // Clear user input
+            document.getElementById("userInput").value = "";
+
+            // Scroll to the bottom of the chatbox
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
